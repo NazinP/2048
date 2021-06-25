@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class SquareBoard extends Board {
+public class SquareBoard<V> extends Board<Key, V> {
     private int size;
 
     public SquareBoard(int size) {
@@ -14,7 +14,7 @@ public class SquareBoard extends Board {
     }
 
     @Override
-    public void fillBoard(List<Integer> list) {
+    public void fillBoard(List<V> list) {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 int index = i * size + j;
@@ -32,7 +32,7 @@ public class SquareBoard extends Board {
     }
 
     @Override
-    public void addItem(Key key, Integer value) {
+    public void addItem(Key key, V value) {
         board.put(key, value);
     }
 
@@ -45,7 +45,7 @@ public class SquareBoard extends Board {
     }
 
     @Override
-    public Integer getValue(Key key) {
+    public V getValue(Key key) {
         return board.get(key);
     }
 
@@ -64,13 +64,13 @@ public class SquareBoard extends Board {
     }
 
     @Override
-    public boolean hasValue(Integer value) {
+    public boolean hasValue(V value) {
         return board.values().stream()
                 .anyMatch(integer -> Objects.equals(value, integer));
     }
 
     @Override
-    public List<Integer> getValues(List<Key> keys) {
+    public List<V> getValues(List<Key> keys) {
         return board.keySet().stream()
                 .map(board::get)
                 .collect(Collectors.toList());

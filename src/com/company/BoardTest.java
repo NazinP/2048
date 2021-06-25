@@ -1,14 +1,20 @@
 package com.company;
 
 import com.company.models.Board;
+import com.company.models.Key;
 import com.company.models.SquareBoard;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import static java.util.Arrays.asList;
 
 public class BoardTest {
-    private final static Board board = new SquareBoard(2);
+    private final static Board<Key, Integer> board = new SquareBoard<>(4);
+    static Random random = new Random();
 
     public static void main(String[] args) {
         board.fillBoard(asList(1, 2, 3, null));
