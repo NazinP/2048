@@ -1,6 +1,7 @@
 package com.company.models;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -15,6 +16,9 @@ public class SquareBoard<V> extends Board<Key, V> {
 
     @Override
     public void fillBoard(List<V> list) {
+        if (list.size() > size * size){
+            throw new RuntimeException();
+        }
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 int index = i * size + j;
@@ -71,8 +75,10 @@ public class SquareBoard<V> extends Board<Key, V> {
 
     @Override
     public List<V> getValues(List<Key> keys) {
-        return board.keySet().stream()
-                .map(board::get)
-                .collect(Collectors.toList());
+        List<V> values = new ArrayList<>();
+        for (Key key : keys) {
+            values.add(board.get(key));
+        }
+        return values;
     }
 }

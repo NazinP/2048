@@ -2,10 +2,7 @@ package com.company.models;
 
 import com.company.interfaces.Game;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Game2048 implements Game {
     public static final int GAME_SIZE = 4;
@@ -22,7 +19,6 @@ public class Game2048 implements Game {
             intValues.add(null);
         }
         board.fillBoard(intValues);
-
         addItem();
         addItem();
     }
@@ -35,21 +31,46 @@ public class Game2048 implements Game {
 
     @Override
     public boolean move(Direction direction) {
-        if(canMove()){
-            if (direction.equals(Direction.LEFT) || direction.equals(Direction.RIGHT)){
-                for (int i = 0; i < board.height; i++) {
+        boolean moved = false;
+        switch (direction){
+            case UP:
+                for (int i = 0; i < GAME_SIZE; i++) {
+                    moved |= moveLine(board.getColumn(i));
+                }
+                break;
+            case RIGHT:
+                for (int i = 0; i < GAME_SIZE; i++) {
                     List<Key> keys = board.getRow(i);
-                    List<Integer> values = board.getValues(keys);
-                    helper.moveAndMergeEquals(values);
-                    addItem();
+                    Collections.reverse(keys);
+                    moved |= moveLine(keys);
                 }
-            }else {
-                for (int i = 0; i < board.width; i++) {
+                break;
+            case DOWN:
+                for (int i = 0; i < GAME_SIZE; i++) {
                     List<Key> keys = board.getColumn(i);
-                    List<Integer> values = board.getValues(keys);
-                    helper.moveAndMergeEquals(values);
-                    addItem();
+                    Collections.reverse(keys);
+                    moved |= moveLine(keys);
                 }
+                break;
+            case LEFT:
+                for (int i = 0; i < GAME_SIZE; i++) {
+                    moved |= moveLine(board.getRow(i));
+                }
+                break;
+        }
+        if (moved){
+            addItem();
+        }
+        return true;
+    }
+
+    private boolean moveLine(List<Key> keys) {
+        List<Integer> values = board.getValues(keys);
+        List<Integer> mergedValues = helper.moveAndMergeEquals(values);
+        if (!values.equals(mergedValues)) {
+            Iterator<Integer> iter = mergedValues.iterator();
+            for (Key key : keys) {
+                board.addItem(key, iter.next());
             }
             return true;
         }
@@ -76,6 +97,6 @@ public class Game2048 implements Game {
 
     @Override
     public boolean hasWin() {
-        return true;
+        return board.hasValue(64);
     }
 }

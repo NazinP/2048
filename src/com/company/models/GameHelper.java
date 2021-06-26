@@ -1,37 +1,31 @@
 package com.company.models;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-public class GameHelper implements Comparator<Integer>{
+public class GameHelper {
     public List<Integer> moveAndMergeEquals(List<Integer> list) {
-        List<Integer> newLine = new ArrayList<>(list);
-        newLine.sort(this::compare);
-
-        for (int i = 1; i < newLine.size(); i++) {
-            if (Objects.equals(newLine.get(i), newLine.get(i - 1)) || newLine.get(i) == null){
-                continue;
+        if (!list.isEmpty() && list.stream().noneMatch(Objects::nonNull)) return list;
+        List<Integer> filteredList = list.stream().filter(Objects::nonNull).collect(Collectors.toList());
+        List<Integer> resultList = new ArrayList<>();
+        int i = 0;
+        while (i < filteredList.size()) {
+            Integer currentItem = filteredList.get(i);
+            // не последний элемент
+            if (i < filteredList.size() - 1 && currentItem.equals(filteredList.get(i + 1))) {
+                resultList.add(currentItem * 2);
+                i = i + 2;
+            } else {
+                resultList.add(currentItem);
+                i++;
             }
-            else{
-                int sum = newLine.get(i) + newLine.get(i - 1);
-                newLine.set(i - 1, sum);
-                newLine.remove(i);
-                newLine.add(null);
+        }
+        if (resultList.size() != list.size()) {
+            int count = list.size() - resultList.size();
+            for (int j = 0; j < count; j++) {
+                resultList.add(null);
             }
         }
-        return newLine;
-    }
-
-    @Override
-    public int compare(Integer left, Integer right) {
-        if (left.equals(right)) {
-            return 0;
-        }
-        if (left == null) {
-            return 1;
-        }
-        if (right == null) {
-            return -1;
-        }
-        return 0;
+        return resultList;
     }
 }
