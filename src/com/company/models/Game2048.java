@@ -26,13 +26,21 @@ public class Game2048 implements Game {
     // Если не пустой то можно сделать ход
     @Override
     public boolean canMove() {
-        return !board.availableSpace().isEmpty();
+        boolean hasSpace = !board.availableSpace().isEmpty();
+        boolean hasMoveInFuture = false;
+        if(board.availableSpace().size() == 1){
+            for (Direction direction : Direction.values()) {
+                hasMoveInFuture |= move(direction);
+            }
+            return hasMoveInFuture;
+        }
+        return hasSpace;
     }
 
     @Override
     public boolean move(Direction direction) {
         boolean moved = false;
-        switch (direction){
+        switch (direction) {
             case UP:
                 for (int i = 0; i < GAME_SIZE; i++) {
                     moved |= moveLine(board.getColumn(i));
@@ -58,7 +66,7 @@ public class Game2048 implements Game {
                 }
                 break;
         }
-        if (moved){
+        if (moved) {
             addItem();
         }
         return true;
@@ -86,7 +94,8 @@ public class Game2048 implements Game {
         } else if (randomValue <= 0.9 || randomValue > 0.1) {
             cellValue = 2;
         }
-        Key key = board.availableSpace().get(random.nextInt(GAME_SIZE));
+        List<Key> keys = board.availableSpace();
+        Key key = keys.get(random.nextInt(Math.min(GAME_SIZE - 1, keys.size() - 1)));
         board.addItem(key, cellValue);
     }
 
